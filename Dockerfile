@@ -9,5 +9,7 @@ RUN cat /tmp/bundle.part00 /tmp/bundle.part01 | base64 -d | tar -xz -C /app \
     && rm -f /tmp/bundle.part00 /tmp/bundle.part01
 COPY patch_frontend.py /tmp/patch_frontend.py
 RUN python /tmp/patch_frontend.py && rm -f /tmp/patch_frontend.py
+COPY patch_instagram.py /tmp/patch_instagram.py
+RUN python /tmp/patch_instagram.py && rm -f /tmp/patch_instagram.py
 ENV PYTHONUNBUFFERED=1
 CMD ["sh","-c","uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
