@@ -7,7 +7,7 @@ if '@app.get("/terms"' not in s:
 from fastapi.responses import PlainTextResponse
 LEGAL_CSS="""body{margin:0;background:#07110c;color:#eef7f1;font-family:Arial,sans-serif;line-height:1.65}.wrap{max-width:900px;margin:auto;padding:48px 24px}h1,h2{color:#57f287}a{color:#57f287}.card{background:#0d1b13;border:1px solid #244c32;border-radius:16px;padding:28px}.muted{color:#a9b9ae}"""
 def legal_page(title,body):
-    return HTMLResponse(f'''<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>{title} | ThemeForge</title><style>{LEGAL_CSS}</style></head><body><main class="wrap"><p><a href="/">← ThemeForge</a></p><div class="card"><h1>{title}</h1><p class="muted">Effective: September 15, 2026</p>{body}</div></main></body></html>''')
+    return HTMLResponse(f'''<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>{title} | ThemeForge</title><style>{LEGAL_CSS}</style></head><body><main class="wrap"><p><a href="/">&larr; ThemeForge</a></p><div class="card"><h1>{title}</h1><p class="muted">Effective: September 15, 2026</p>{body}</div></main></body></html>''')
 @app.get("/terms", response_class=HTMLResponse)
 @app.get("/terms/", response_class=HTMLResponse)
 def terms_page():
