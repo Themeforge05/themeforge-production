@@ -13,5 +13,7 @@ COPY patch_instagram.py /tmp/patch_instagram.py
 RUN python /tmp/patch_instagram.py && rm -f /tmp/patch_instagram.py
 COPY patch_legal.py /tmp/patch_legal.py
 RUN python /tmp/patch_legal.py && rm -f /tmp/patch_legal.py
+COPY patch_tiktok_review.py /tmp/patch_tiktok_review.py
+RUN python /tmp/patch_tiktok_review.py && rm -f /tmp/patch_tiktok_review.py
 ENV PYTHONUNBUFFERED=1
 CMD ["sh","-c","uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
