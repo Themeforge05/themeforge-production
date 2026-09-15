@@ -9,14 +9,19 @@ LEGAL_CSS="""body{margin:0;background:#07110c;color:#eef7f1;font-family:Arial,sa
 def legal_page(title,body):
     return HTMLResponse(f'''<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>{title} | ThemeForge</title><style>{LEGAL_CSS}</style></head><body><main class="wrap"><p><a href="/">← ThemeForge</a></p><div class="card"><h1>{title}</h1><p class="muted">Effective: September 15, 2026</p>{body}</div></main></body></html>''')
 @app.get("/terms", response_class=HTMLResponse)
+@app.get("/terms/", response_class=HTMLResponse)
 def terms_page():
     return legal_page("Terms of Service", '''<p>These Terms govern use of ThemeForge, a web application for creating, reviewing, managing and publishing original short-form media content.</p><h2>Use of ThemeForge</h2><p>You may use ThemeForge only in compliance with applicable law and the rules of connected platforms. You are responsible for your account, your content, and ensuring you have necessary rights and permissions.</p><h2>Connected services</h2><p>ThemeForge may connect to third-party services such as TikTok and Instagram only after authorization. Those services have their own terms, policies and requirements.</p><h2>Publishing and approval</h2><p>ThemeForge provides user review and approval before social publishing. You remain responsible for reviewing media, captions, disclosures and publishing choices.</p><h2>Prohibited use</h2><p>You may not use ThemeForge to infringe intellectual-property or privacy rights, impersonate others, distribute unlawful or deceptive content, bypass platform safeguards, or access accounts without authorization.</p><h2>AI-generated content</h2><p>AI output may contain errors and must be reviewed before use. Users are responsible for accuracy, appropriateness and required disclosures.</p><h2>Availability and results</h2><p>The service may change or be interrupted. No particular audience growth, revenue, engagement or business result is guaranteed.</p><h2>Changes</h2><p>These Terms may be updated as ThemeForge develops.</p>''')
 @app.get("/privacy", response_class=HTMLResponse)
+@app.get("/privacy/", response_class=HTMLResponse)
 def privacy_page():
     return legal_page("Privacy Policy", '''<p>This Privacy Policy explains how ThemeForge handles information when you use the service and connect supported social-media accounts.</p><h2>Information we process</h2><p>ThemeForge may process account information such as email and profile information, content and settings you create, usage records needed to operate the service, and information returned by social platforms after authorization.</p><h2>Social account connections</h2><p>When you connect TikTok, Instagram or another supported service, ThemeForge receives information and permissions made available through scopes you approve. Access tokens are used to perform authorized functions such as reading basic account information or uploading approved content.</p><h2>How information is used</h2><p>Information is used to authenticate users, provide content creation and publishing features, maintain integrations, troubleshoot the service, protect security and improve ThemeForge.</p><h2>Sharing</h2><p>ThemeForge does not sell personal information. Information may be transmitted to service providers and connected platforms when necessary to provide features you request or when required by law.</p><h2>AI services</h2><p>Content may be sent to configured technology providers when necessary to generate scripts, audio or other media requested through ThemeForge.</p><h2>Retention and security</h2><p>ThemeForge uses reasonable technical measures intended to protect information and retains information as needed to operate the service and meet legitimate obligations.</p><h2>Your choices</h2><p>You choose whether to connect a social account and may revoke authorization through the applicable platform.</p><h2>Children</h2><p>ThemeForge is not intended for children under 13 or any higher minimum age required by applicable law or a connected platform.</p><h2>Changes</h2><p>This policy may be updated as ThemeForge and its integrations evolve.</p>''')
+TIKTOK_VERIFY="tiktok-developers-site-verification=ktn8RMBEZIPCJpXqAnaVUlukIktPWP8h"
 @app.get("/tiktokktn8RMBEZIPCJpXqAnaVUlukIktPWP8h.txt", response_class=PlainTextResponse)
+@app.get("/terms/tiktokktn8RMBEZIPCJpXqAnaVUlukIktPWP8h.txt", response_class=PlainTextResponse)
+@app.get("/privacy/tiktokktn8RMBEZIPCJpXqAnaVUlukIktPWP8h.txt", response_class=PlainTextResponse)
 def tiktok_site_verification():
-    return "tiktok-developers-site-verification=ktn8RMBEZIPCJpXqAnaVUlukIktPWP8h"
+    return TIKTOK_VERIFY
 '''
 p.write_text(s)
 t=Path('/app/app/tiktok.py')
@@ -25,4 +30,4 @@ if t.exists():
     x=x.replace('user.info.basic,video.upload,video.publish','user.info.basic,video.upload')
     x=x.replace('user.info.basic%2Cvideo.upload%2Cvideo.publish','user.info.basic%2Cvideo.upload')
     t.write_text(x)
-print('legal pages, TikTok review scopes, and site verification applied')
+print('legal pages, TikTok review scopes, and URL-prefix verification applied')
