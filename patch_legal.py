@@ -6,7 +6,7 @@ s = p.read_text()
 if '@app.get("/terms"' not in s:
     addition = r'''
 
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse
 
 LEGAL_CSS = "body{margin:0;background:#07110c;color:#eef7f1;font-family:Arial,sans-serif;line-height:1.65}.wrap{max-width:900px;margin:auto;padding:48px 24px}h1,h2{color:#57f287}a{color:#57f287}.card{background:#0d1b13;border:1px solid #244c32;border-radius:16px;padding:28px}.muted{color:#a9b9ae}"
 
