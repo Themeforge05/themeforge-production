@@ -1,6 +1,6 @@
 FROM python:3.12-slim
 
-RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg espeak-ng ca-certificates && rm -rf /var/lib/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg espeak-ng ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY bundle.part00 bundle.part01 /tmp/
 RUN cat /tmp/bundle.part00 /tmp/bundle.part01 | base64 -d | tar -xz -C /app \
@@ -17,5 +17,7 @@ COPY patch_tiktok_review.py /tmp/patch_tiktok_review.py
 RUN python /tmp/patch_tiktok_review.py && rm -f /tmp/patch_tiktok_review.py
 COPY patch_render.py /tmp/patch_render.py
 RUN python /tmp/patch_render.py && rm -f /tmp/patch_render.py
+COPY patch_preview.py /tmp/patch_preview.py
+RUN python /tmp/patch_preview.py && rm -f /tmp/patch_preview.py
 ENV PYTHONUNBUFFERED=1
 CMD ["sh","-c","uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
