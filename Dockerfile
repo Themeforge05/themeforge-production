@@ -17,6 +17,8 @@ COPY patch_tiktok_review.py /tmp/patch_tiktok_review.py
 RUN python /tmp/patch_tiktok_review.py && rm -f /tmp/patch_tiktok_review.py
 COPY patch_render.py /tmp/patch_render.py
 RUN python /tmp/patch_render.py && rm -f /tmp/patch_render.py
+COPY patch_production.py /tmp/patch_production.py
+RUN python /tmp/patch_production.py && rm -f /tmp/patch_production.py
 COPY patch_preview.py /tmp/patch_preview.py
 RUN python /tmp/patch_preview.py && rm -f /tmp/patch_preview.py
 ENV PYTHONUNBUFFERED=1
