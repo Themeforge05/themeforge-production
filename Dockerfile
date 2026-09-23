@@ -5,7 +5,7 @@ WORKDIR /app
 COPY bundle.part00 bundle.part01 /tmp/
 RUN cat /tmp/bundle.part00 /tmp/bundle.part01 | base64 -d | tar -xz -C /app \
     && pip install --no-cache-dir -r requirements.txt \
-    && pip install --no-cache-dir bcrypt==4.0.1 \
+    && pip install --no-cache-dir bcrypt==4.0.1 runwayml \
     && rm -f /tmp/bundle.part00 /tmp/bundle.part01
 COPY patch_frontend.py /tmp/patch_frontend.py
 RUN python /tmp/patch_frontend.py && rm -f /tmp/patch_frontend.py
@@ -21,5 +21,9 @@ COPY patch_production.py /tmp/patch_production.py
 RUN python /tmp/patch_production.py && rm -f /tmp/patch_production.py
 COPY patch_preview.py /tmp/patch_preview.py
 RUN python /tmp/patch_preview.py && rm -f /tmp/patch_preview.py
+COPY patch_cloud_platform.py /tmp/patch_cloud_platform.py
+RUN python /tmp/patch_cloud_platform.py && rm -f /tmp/patch_cloud_platform.py
+COPY patch_youtube_platform.py /tmp/patch_youtube_platform.py
+RUN python /tmp/patch_youtube_platform.py && rm -f /tmp/patch_youtube_platform.py
 ENV PYTHONUNBUFFERED=1
 CMD ["sh","-c","uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
