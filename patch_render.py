@@ -14,7 +14,7 @@ new_render = r'''async def render(video_id,idea):
 
     queries=list(idea.media_queries or [])
     if len(queries)<3:
-        fallback=[idea.hook, idea.title, idea.script[:140], "vertical cinematic background"]
+        fallback=[getattr(idea,"hook",""), getattr(idea,"title",""), getattr(idea,"script","")[:140], "vertical cinematic background"]
         queries.extend([str(x) for x in fallback if x and str(x) not in queries])
     queries=queries[:8]
 
