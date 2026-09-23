@@ -66,12 +66,13 @@ new_render = r'''async def render(video_id,idea):
         clip=GEN/f"{video_id}_clip{i}.mp4"
         vf=("scale=1080:1920:force_original_aspect_ratio=increase,"
             "crop=1080:1920,setsar=1,fps=30,format=yuv420p")
-        cmd=[ff,"-y","-loop","1","-framerate","30","-i",str(scene_path),"-t",str(segment),
-             "-vf",vf,"-r","30","-c:v","libx264","-preset","veryfast","-pix_fmt","yuv420p",
+        cmd=[ff,"-y","-loop","1","-framerate","24","-i",str(scene_path),"-t",str(segment),
+             "-vf",vf,"-r","24","-c:v","libx264","-preset","ultrafast","-threads","2","-pix_fmt","yuv420p",
              "-movflags","+faststart","-an",str(clip)]
         run=subprocess.run(cmd,capture_output=True,text=True,timeout=180)
         if run.returncode!=0 or not clip.exists() or clip.stat().st_size<4096:
-            detail=(run.stderr or "scene animation failed")[-1200:]
+            log=run.stderr or "scene encoding failed"
+            detail=f"FFmpeg exit {run.returncode}. "+log[:500]+" ... "+log[-900:]
             return str(poster),None,"Render failed (scene stage): "+detail
         clips.append(clip)
 
