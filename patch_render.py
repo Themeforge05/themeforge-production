@@ -58,15 +58,14 @@ new_render = r'''async def render(video_id,idea):
     silent=GEN/f"{video_id}.video.mp4"
     finaltmp=GEN/f"{video_id}.rendering.mp4"
 
-    # Animate every generated scene with a gentle alternating Ken Burns move, then concatenate.
+    # Build every generated scene as a standards-compliant vertical clip, then concatenate.
+    # Keep this filter deliberately simple: Railway's FFmpeg build can stall on zoompan
+    # expressions for still-image inputs and produce a zero-frame file.
     clips=[]
     for i,scene_path in enumerate(scenes):
         clip=GEN/f"{video_id}_clip{i}.mp4"
-        zoom="min(zoom+0.0007,1.10)" if i%2==0 else "if(eq(on,1),1.10,max(zoom-0.0007,1.0))"
-        vf=("scale=1200:2134:force_original_aspect_ratio=increase,"
-            "crop=1200:2134,zoompan=z='"+zoom+"':"
-            "x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=1:s=1080x1920:fps=30,"
-            "format=yuv420p")
+        vf=("scale=1080:1920:force_original_aspect_ratio=increase,"
+            "crop=1080:1920,setsar=1,fps=30,format=yuv420p")
         cmd=[ff,"-y","-loop","1","-framerate","30","-i",str(scene_path),"-t",str(segment),
              "-vf",vf,"-r","30","-c:v","libx264","-preset","veryfast","-pix_fmt","yuv420p",
              "-movflags","+faststart","-an",str(clip)]
