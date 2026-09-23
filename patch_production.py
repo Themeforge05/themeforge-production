@@ -4,28 +4,24 @@ p = Path('/app/app/main.py')
 s = p.read_text()
 original = s
 
-# Production runs in a background task. Ensure its completion path only marks a video
-# pending approval when render() actually returned a valid MP4 path.
-# Patch common assignment forms used by the bundled app without changing auth/routes.
-repls = [
-    ('v.poster_path,v.mp4_path,v.notes=await render(v.video_id,idea)\n        v.status="pending_approval"',
-     'v.poster_path,v.mp4_path,v.notes=await render(v.video_id,idea)\n        v.status="pending_approval" if v.mp4_path else "failed"'),
-    ('video.poster_path,video.mp4_path,video.notes=await render(video.video_id,idea)\n        video.status="pending_approval"',
-     'video.poster_path,video.mp4_path,video.notes=await render(video.video_id,idea)\n        video.status="pending_approval" if video.mp4_path else "failed"'),
-    ('v.poster_path, v.mp4_path, v.notes = await render(v.video_id, idea)\n        v.status = "pending_approval"',
-     'v.poster_path, v.mp4_path, v.notes = await render(v.video_id, idea)\n        v.status = "pending_approval" if v.mp4_path else "failed"'),
-]
-for old,new in repls:
-    s=s.replace(old,new)
+old_complete = '''        v.render_message=msg;v.status="pending_approval";i.status="produced";db.commit()'''
+new_complete = '''        v.render_message=msg
+        v.status="pending_approval" if v.video_path else "failed"
+        i.status="produced" if v.video_path else "render_failed"
+        db.commit()'''
+if old_complete not in s:
+    raise SystemExit('Expected production completion line not found; refusing to patch')
+s = s.replace(old_complete, new_complete)
 
-# Server-side approval guard: UI is not the security boundary.
-for needle in [
-    'if action not in ["approve","reject"]:',
-    "if action not in ['approve','reject']:",
-]:
-    if needle in s and 'Cannot approve a video without a valid MP4' not in s:
-        # Insert later only if exact route source exposes a usable video variable; avoid blind mutation.
-        pass
+old_review = '''    if action not in ("approve","reject"):raise HTTPException(400,"Invalid action")
+    v.status="approved" if action=="approve" else "rejected";db.commit();return {"status":v.status}'''
+new_review = '''    if action not in ("approve","reject"):raise HTTPException(400,"Invalid action")
+    if action=="approve" and not v.video_path:
+        raise HTTPException(400,"Cannot approve a video without a playable MP4")
+    v.status="approved" if action=="approve" else "rejected";db.commit();return {"status":v.status}'''
+if old_review not in s:
+    raise SystemExit('Expected review handler not found; refusing to patch')
+s = s.replace(old_review, new_review)
 
 p.write_text(s)
-print('ThemeForge production state patch applied; changed=', s != original)
+print('ThemeForge production states and approval guard patched; changed=', s != original)
